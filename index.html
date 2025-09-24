@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CEIP Outes — 3º Ciclo Schedule</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <style>
+    :root{
+      --light-primary: #5E72E4;
+      --light-secondary: #F4F5F7;
+      --light-background: #F8F9FE;
+      --light-text: #525f7f;
+      --light-heading: #32325d;
+      --light-card-bg: #ffffff;
+      --light-card-shadow: 0 0 2rem 0 rgba(136,152,170,.15);
+      --light-border: #E9ECEF;
+      --light-input-bg: #fff;
+
+      --dark-primary: #6E85FF;
+      --dark-secondary: #27293D;
+      --dark-background: #171927;
+      --dark-text: #A1A5B7;
+      --dark-heading: #E9ECEF;
+      --dark-card-bg: #1E1E2F;
+      --dark-card-shadow: 0 0 2rem 0 rgba(0,0,0,.25);
+      --dark-border: #32325d;
+      --dark-input-bg: #2B2F4A;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-background);
+      color: var(--light-text);
+      transition: background-color .25s ease, color .25s ease;
+      padding-bottom: 3rem;
+    }
+
+    body.dark-mode {
+      background-color: var(--dark-background);
+      color: var(--dark-text);
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--light-primary);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    body.dark-mode .navbar {
+      background: var(--dark-card-bg);
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .dark-mode-toggle .form-check-input {
+      min-width: 3.25rem;
+      height: 1.7rem;
+    }
+
+    /* CARD */
+    .card {
+      border: none;
+      border-radius: .5rem;
+      box-shadow: var(--light-card-shadow);
+      background: var(--light-card-bg);
+      transition: background-color .25s ease, color .25s ease;
+    }
+    body.dark-mode .card {
+      background: var(--dark-card-bg);
+      box-shadow: var(--dark-card-shadow);
+    }
+
+    .card-header {
+      background-color: transparent;
+      border-bottom: 1px solid var(--light-border);
+      color: var(--light-heading);
+      font-weight: 600;
+    }
+    body.dark-mode .card-header {
+      color: var(--dark-heading);
+      border-bottom-color: var(--dark-border);
+    }
+    
+    .card-header .btn {
+      padding: .2rem .5rem;
+    }
+
+    /* ACCORDION */
+    .accordion-button { background: var(--light-primary) !important; color: white !important; }
+    body.dark-mode .accordion-button { background: var(--dark-primary) !important; }
+    .accordion-button:not(.collapsed) { box-shadow: none; }
+    .accordion-button:focus { box-shadow: none; }
+    .accordion-button::after {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+    .accordion-header .btn {
+      background: none;
+      border: none;
+      color: var(--bs-danger);
+    }
+    body.dark-mode .accordion-header .btn {
+      color: var(--bs-danger);
+    }
+
+    /* TABLE / SCHEDULE */
+    .table { border-color: var(--light-border); }
+    body.dark-mode .table { border-color: var(--dark-border); }
+    body.dark-mode .table-light { --bs-table-bg: var(--dark-secondary); --bs-table-border-color: var(--dark-border); color: var(--dark-heading); }
+
+    .time-slot {
+      background-color: var(--light-secondary);
+      font-weight: 600;
+      color: var(--light-heading);
+      vertical-align: middle;
+      text-align: center;
+    }
+    body.dark-mode .time-slot {
+      background-color: var(--dark-secondary);
+      color: var(--dark-heading);
+    }
+
+    .workshop-cell {
+      cursor: pointer;
+      border-radius: .375rem;
+      padding: .55rem;
+      margin-bottom: .5rem;
+      color: white;
+      transition: transform .18s ease, box-shadow .18s ease;
+      position: relative;
+      font-size: .9rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+    .workshop-cell:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+    }
+    body.dark-mode .workshop-cell:hover { box-shadow: 0 8px 22px rgba(0,0,0,0.22); }
+    .workshop-cell.open-room { background: #2DCE89 !important; }
+    .comment-icon { position: absolute; top: .45rem; right: .45rem; font-size: .85rem; opacity: .85; }
+    .available-space {
+      background: var(--light-secondary);
+      border: 1px dashed var(--light-border);
+      border-radius: .5rem;
+      padding: .5rem;
+      margin-top: .5rem;
+      text-align: center;
+      color: #8898AA;
+      font-size: .85rem;
+    }
+    body.dark-mode .available-space {
+      background: var(--dark-secondary);
+      border-color: var(--dark-border);
+      color: var(--dark-text);
+    }
+    .workshops-container { min-height: 80px; }
+
+    /* FORMS */
+    .form-control, .form-select {
+      background: var(--light-input-bg);
+      border-color: var(--light-border);
+      color: var(--light-text);
+    }
+    .form-control:focus, .form-select:focus {
+      background: var(--light-input-bg);
+      color: var(--light-text);
+      border-color: var(--light-primary);
+      box-shadow: 0 0 0 2px rgba(94,114,228,.25);
+    }
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+      background: var(--dark-input-bg);
+      border-color: var(--dark-border);
+      color: var(--dark-text);
+    }
+    body.dark-mode .form-control::placeholder { color: var(--dark-text); opacity: .6; }
+    body.dark-mode .form-control:focus,
+    body.dark-mode .form-select:focus {
+      background: var(--dark-input-bg);
+      color: var(--dark-text);
+      border-color: var(--dark-primary);
+      box-shadow: 0 0 0 2px rgba(110,133,255,.25);
+    }
+    select[multiple] {
+        height: 120px;
+    }
+    
+    .form-check-input:checked { background-color: var(--light-primary); border-color: var(--light-primary); }
+    body.dark-mode .form-check-input:checked { background-color: var(--dark-primary); border-color: var(--dark-primary); }
+
+    /* LIST GROUP (config panel) */
+    .list-group-item {
+      background-color: transparent;
+      border-color: var(--light-border);
+      padding: .6rem 1rem;
+    }
+    body.dark-mode .list-group-item {
+      border-color: var(--dark-border);
+    }
+    .list-group-item button {
+      padding: .1rem .4rem;
+    }
+    
+    /* MODAL */
+    .modal-content { background: var(--light-card-bg); }
+    body.dark-mode .modal-content { background: var(--dark-card-bg); }
+    body.dark-mode .modal-header,
+    body.dark-mode .modal-footer {
+      border-color: var(--dark-border);
+    }
+    body.dark-mode .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="fas fa-school me-2"></i>
+        <span>CEIP Outes — 3º Ciclo</span>
+      </a>
+      <div class="dark-mode-toggle text-white ms-auto d-flex align-items-center gap-2">
+        <i class="fas fa-sun"></i>
+        <div class="form-check form-switch mb-0">
+          <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch">
+        </div>
+        <i class="fas fa-moon"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container" id="app-container">
+    <!-- Config Panel, Schedule, History cards... (HTML is unchanged from previous version) -->
+    <!-- ... Rest of the HTML body is the same as the previous version ... -->
+    <div class="accordion mb-4" id="configAccordion">
+      <div class="accordion-item card">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfig">
+            <h5 class="m-0"><i class="fas fa-cog me-2"></i>Configuration Panel</h5>
+          </button>
+        </h2>
+        <div id="collapseConfig" class="accordion-collapse collapse" data-bs-parent="#configAccordion">
+          <div class="card-body">
+            <div class="row" id="configManagementRow">
+              <div class="col-md-6 col-lg-3 mb-4">
+                <label class="form-label fw-bold">Teachers</label>
+                <div class="input-group"><input type="text" class="form-control" placeholder="Teacher name" id="newTeacher"><button class="btn btn-success" id="addTeacherBtn"><i class="fas fa-plus"></i></button></div>
+                <div class="mt-3"><ul class="list-group" id="teacherList"></ul></div>
+              </div>
+              <div class="col-md-6 col-lg-3 mb-4">
+                <label class="form-label fw-bold">Spaces</label>
+                <div class="input-group"><input type="text" class="form-control" placeholder="Space name" id="newSpace"><button class="btn btn-success" id="addSpaceBtn"><i class="fas fa-plus"></i></button></div>
+                <div class="mt-3"><ul class="list-group" id="spaceList"></ul></div>
+              </div>
+              <div class="col-md-6 col-lg-3 mb-4">
+                <label class="form-label fw-bold">Courses</label>
+                <div class="input-group"><input type="text" class="form-control" placeholder="Course name" id="newCourse"><button class="btn btn-success" id="addCourseBtn"><i class="fas fa-plus"></i></button></div>
+                <div class="mt-3"><ul class="list-group" id="courseList"></ul></div>
+              </div>
+              <div class="col-md-6 col-lg-3 mb-4">
+                <label class="form-label fw-bold">Time Slots</label>
+                <div id="timeSlotList"></div>
+                <div class="input-group mt-2"><input type="text" class="form-control" placeholder="e.g., 17:00-18:00" id="newTimeSlot"><button class="btn btn-success" id="addTimeSlotBtn"><i class="fas fa-plus"></i></button></div>
+              </div>
+            </div>
+            <hr>
+            <div class="row mt-3" id="subjectManagementRow">
+              <div class="col-12">
+                <label class="form-label fw-bold">Subjects</label>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="Subject name" id="newSubjectName">
+                  <input type="color" class="form-control form-control-color" id="newSubjectColor" value="#5E72E4" title="Choose color">
+                  <button class="btn btn-success" id="addSubjectBtn">Add Subject</button>
+                </div>
+                <div class="row" id="subjectList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEKLY SCHEDULE CARD -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center">
+            <h5 class="m-0"><i class="fas fa-calendar-alt me-2"></i>Weekly Schedule</h5>
+            <div class="btn-toolbar">
+              <div class="btn-group me-2 mb-2 mb-md-0">
+                <button class="btn btn-sm btn-outline-secondary" id="exportCsvBtn"><i class="fas fa-file-csv me-1"></i> CSV</button>
+              </div>
+              <div class="btn-group me-2 mb-2 mb-md-0">
+                <button class="btn btn-sm btn-info" id="archiveWeekBtn"><i class="fas fa-archive me-1"></i> Archive</button>
+                <button class="btn btn-sm btn-danger" id="clearScheduleBtn"><i class="fas fa-broom me-1"></i> Clear</button>
+              </div>
+              <div class="btn-group mb-2 mb-md-0">
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newWorkshopModal"><i class="fas fa-plus me-1"></i> New Activity</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body border-bottom">
+            <div class="row align-items-end">
+              <div class="col-md-6 col-lg-3 mb-2">
+                <label for="filterSubject" class="form-label fw-bold"><i class="fas fa-palette me-1"></i>Subject</label>
+                <select id="filterSubject" class="form-select form-select-sm"></select>
+              </div>
+              <div class="col-md-6 col-lg-3 mb-2">
+                <label for="filterTeacher" class="form-label fw-bold"><i class="fas fa-chalkboard-teacher me-1"></i>Teacher</label>
+                <select id="filterTeacher" class="form-select form-select-sm"></select>
+              </div>
+              <div class="col-md-4 col-lg-2 mb-2">
+                <label for="filterSpace" class="form-label fw-bold"><i class="fas fa-map-marker-alt me-1"></i>Space</label>
+                <select id="filterSpace" class="form-select form-select-sm"></select>
+              </div>
+              <div class="col-md-4 col-lg-2 mb-2">
+                <label for="filterCourse" class="form-label fw-bold"><i class="fas fa-users me-1"></i>Course</label>
+                <select id="filterCourse" class="form-select form-select-sm"></select>
+              </div>
+              <div class="col-md-4 col-lg-2 mb-2">
+                <button class="btn btn-sm btn-secondary w-100" id="clearFiltersBtn"><i class="fas fa-times me-2"></i>Clear</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-2 p-md-3">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width:10%">Time</th>
+                    <th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduleBody" class="align-middle"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- HISTORY CARD -->
+    <div class="row mt-4">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="m-0"><i class="fas fa-history me-2"></i>Schedule History</h5>
+            <button class="btn btn-sm btn-outline-danger" id="clearHistoryBtn">
+              <i class="fas fa-trash-alt me-1"></i> Clear All
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="accordion" id="historyAccordion">
+              <!-- Content generated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Edit Activity Modal -->
+    <div class="modal fade" id="workshopModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Edit Activity</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <input type="hidden" id="editWorkshopId">
+            <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="isOpenRoomEdit"><label class="form-check-label" for="isOpenRoomEdit">This is an open room</label></div>
+            <div id="workshopFieldsEdit">
+              <div class="mb-3"><label for="editWorkshopName" class="form-label">Workshop Name</label><input type="text" class="form-control" id="editWorkshopName"></div>
+              <div class="mb-3"><label for="editWorkshopSubject" class="form-label">Subject</label><select class="form-select" id="editWorkshopSubject"></select></div>
+              <div class="mb-3"><label for="editWorkshopCourse" class="form-label">Course (optional)</label><select class="form-select" id="editWorkshopCourse"></select></div>
+            </div>
+            <div class="mb-3"><label for="editWorkshopTeachers" class="form-label">Teacher(s)/Supervisor(s)</label><select class="form-select" id="editWorkshopTeachers" multiple></select></div>
+            <div class="mb-3"><label for="editWorkshopSpaces" class="form-label">Space(s)</label><select class="form-select" id="editWorkshopSpaces" multiple></select></div>
+            <div class="row">
+              <div class="col-6"><label for="editWorkshopDay" class="form-label">Day</label><select class="form-select" id="editWorkshopDay"></select></div>
+              <div class="col-6"><label for="editWorkshopTimeSlot" class="form-label">Time Slot</label><select class="form-select" id="editWorkshopTimeSlot"></select></div>
+            </div>
+            <div class="mb-3"><label for="editWorkshopComments" class="form-label">Comments (optional)</label><textarea class="form-control" id="editWorkshopComments" rows="2"></textarea></div>
+          </div>
+          <div class="modal-footer"><button id="deleteWorkshopBtn" class="btn btn-danger">Delete</button><button id="saveWorkshopChangesBtn" class="btn btn-primary">Save Changes</button></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- New Activity Modal -->
+    <div class="modal fade" id="newWorkshopModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">New Activity</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <form id="newWorkshopForm">
+              <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="isOpenRoomNew"><label class="form-check-label" for="isOpenRoomNew">This is an open room</label></div>
+              <div id="workshopFieldsNew">
+                <div class="mb-3"><label for="newWorkshopName" class="form-label">Workshop Name</label><input type="text" class="form-control" id="newWorkshopName" placeholder="e.g., Robotics Club"></div>
+                <div class="mb-3"><label for="newWorkshopSubject" class="form-label">Subject</label><select class="form-select" id="newWorkshopSubject"></select></div>
+                <div class="mb-3"><label for="newWorkshopCourse" class="form-label">Course (optional)</label><select class="form-select" id="newWorkshopCourse"></select></div>
+              </div>
+              <div class="mb-3"><label for="newWorkshopTeachers" class="form-label">Teacher(s)/Supervisor(s)</label><select class="form-select" id="newWorkshopTeachers" multiple></select></div>
+              <div class="mb-3"><label for="newWorkshopSpaces" class="form-label">Space(s)</label><select class="form-select" id="newWorkshopSpaces" multiple></select></div>
+              <div class="row">
+                <div class="col-6"><label for="newWorkshopDay" class="form-label">Day</label><select class="form-select" id="newWorkshopDay"></select></div>
+                <div class="col-6"><label for="newWorkshopTimeSlot" class="form-label">Time Slot</label><select class="form-select" id="newWorkshopTimeSlot"></select></div>
+              </div>
+              <div class="mb-3"><label for="newWorkshopComments" class="form-label">Comments (optional)</label><textarea class="form-control" id="newWorkshopComments" rows="2"></textarea></div>
+            </form>
+          </div>
+          <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button id="createWorkshopBtn" type="button" class="btn btn-primary">Create</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Confirm</h5>
+            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="confirmationModalBody">Are you sure?</div>
+          <div class="modal-footer border-0">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="confirmActionBtn" class="btn btn-danger">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const STORAGE_KEY = 'ceip_outes_schedule_v3'; // Incremented version for new data structure
+
+      let data = {};
+
+      const defaultData = {
+          workshops: [
+              { id: 1, name: "Newspaper", subject: "Language Arts", spaces: ["A - Language Arts Room"], teachers: ["Jorge"], course: "5A", day: "Monday", timeSlot: 0, comments: "Focus on interviews this week." },
+              { id: 2, name: "Fun Math", subject: "Mathematics", spaces: ["B - Science Lab"], teachers: ["Iván"], course: "5B", day: "Monday", timeSlot: 0, comments: "" },
+              { id: 3, name: "Nutrition", subject: "Natural Sciences", spaces: ["B - Science Lab"], teachers: ["Luci"], course: "6A", day: "Tuesday", timeSlot: 0, comments: "" },
+              { id: 4, name: "Open Room", subject: "General Activity", spaces: ["C - Music Room"], teachers: ["Susana"], course: "", day: "Monday", timeSlot: 1, comments: "Supervision duty." },
+              { id: 5, name: "English Club", subject: "English", spaces: ["D - Computer Lab"], teachers: ["Sheila"], course: "6B", day: "Wednesday", timeSlot: 0, comments: "" }
+          ],
+          teachers: ["Sheila", "Jorge", "Adri", "Alba", "Iván", "Zoraida", "Dani", "Luci", "Susana", "Gemma"],
+          spaces: ["A - Language Arts Room", "B - Science Lab", "C - Music Room", "D - Computer Lab", "E - Gymnasium", "F - Covered Courtyard"],
+          courses: ["5A", "5B", "5C", "6A", "6B"],
+          subjects: [
+              { name: "Language Arts", color: "#5E72E4" }, { name: "Mathematics", color: "#11CDEF" },
+              { name: "Social Studies", color: "#F5365C" }, { name: "Natural Sciences", color: "#FB6340" },
+              { name: "English", color: "#FFD600" }, { name: "Physical Education", color: "#8965E0" },
+              { name: "General Activity", color: "#2DCE89" }
+          ],
+          timeSlots: ["8:00-9:30", "9:30-11:00", "11:30-13:00", "14:00-15:30", "15:30-17:00"],
+          days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          history: []
+      };
+
+      const dom = {
+          scheduleBody: document.getElementById('scheduleBody'),
+          newWorkshopModalEl: document.getElementById('newWorkshopModal'),
+          editWorkshopModalEl: document.getElementById('workshopModal'),
+          confirmationModalEl: document.getElementById('confirmationModal')
+      };
+
+      // ---------- DATA & STORAGE ----------
+      function saveToStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function loadFromStorage() {
+          const storedData = localStorage.getItem(STORAGE_KEY);
+          let loaded = {};
+          if (storedData) {
+              try {
+                  loaded = JSON.parse(storedData);
+              } catch(e) {
+                  console.error("Error parsing localStorage data:", e);
+              }
+          }
+          
+          data = {
+              workshops: Array.isArray(loaded.workshops) ? loaded.workshops : defaultData.workshops,
+              teachers: Array.isArray(loaded.teachers) ? loaded.teachers : defaultData.teachers,
+              spaces: Array.isArray(loaded.spaces) ? loaded.spaces : defaultData.spaces,
+              courses: Array.isArray(loaded.courses) ? loaded.courses : defaultData.courses,
+              subjects: Array.isArray(loaded.subjects) ? loaded.subjects : defaultData.subjects,
+              timeSlots: Array.isArray(loaded.timeSlots) ? loaded.timeSlots : defaultData.timeSlots,
+              days: Array.isArray(loaded.days) ? loaded.days : defaultData.days,
+              history: Array.isArray(loaded.history) ? loaded.history : defaultData.history
+          };
+
+          // Migration for old data structure
+          data.workshops.forEach(w => {
+              if (w.teacher && !Array.isArray(w.teacher)) w.teachers = [w.teacher];
+              if (w.space && !Array.isArray(w.space)) w.spaces = [w.space];
+              delete w.teacher;
+              delete w.space;
+          });
+      }
+
+
+      // ---------- RENDER FUNCTIONS ----------
+      function renderAll() {
+        renderLists();
+        updateAllDropdowns();
+        renderScheduleGrid();
+        renderHistory();
+      }
+
+      function renderLists() {
+        renderList('teacherList', data.teachers, 'teacher');
+        renderList('spaceList', data.spaces, 'space');
+        renderList('courseList', data.courses, 'course');
+        renderSubjects();
+        renderTimeSlots();
+      }
+
+      function renderList(containerId, items, type) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = items.map(item =>
+          `<li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>${item}</span>
+            <button class="btn btn-sm btn-outline-danger delete-entity" data-type="${type}" data-name="${item}"><i class="fas fa-times"></i></button>
+          </li>`
+        ).join('');
+      }
+
+      function renderSubjects() {
+        document.getElementById('subjectList').innerHTML = data.subjects
+          .filter(s => s.name !== 'General Activity')
+          .map(subject =>
+            `<div class="col-lg-3 col-md-4 mb-2">
+              <div class="card text-white">
+                <div class="card-body py-2" style="background-color: ${subject.color};">
+                  <div class="d-flex justify-content-between">
+                    <span>${subject.name}</span>
+                    <button class="btn btn-sm btn-light py-0 px-1 delete-subject" data-name="${subject.name}">
+                      <i class="fas fa-times text-danger"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>`
+          ).join('');
+      }
+      
+      function renderTimeSlots() {
+          document.getElementById('timeSlotList').innerHTML = data.timeSlots.map((slot, index) =>
+              `<div class="input-group mb-2">
+                  <input type="text" class="form-control" value="${slot}" data-index="${index}">
+                  <button class="btn btn-outline-primary save-timeslot" data-index="${index}"><i class="fas fa-save"></i></button>
+                  <button class="btn btn-outline-danger delete-timeslot" data-index="${index}"><i class="fas fa-times"></i></button>
+              </div>`
+          ).join('');
+      }
+
+      function renderScheduleGrid() {
+        const filters = {
+          subject: document.getElementById('filterSubject').value,
+          teacher: document.getElementById('filterTeacher').value,
+          space: document.getElementById('filterSpace').value,
+          course: document.getElementById('filterCourse').value
+        };
+
+        let tableHtml = '';
+        data.timeSlots.forEach((timeSlot, timeSlotIndex) => {
+          tableHtml += '<tr>';
+          tableHtml += `<td class="time-slot">${timeSlot}</td>`;
+          data.days.forEach(day => {
+            const workshopsInCell = data.workshops.filter(w => w.day === day && w.timeSlot === timeSlotIndex);
+            
+            const cellContent = workshopsInCell.filter(workshop => {
+              const subjectMatch = filters.subject === 'all' || workshop.subject === filters.subject;
+              const teacherMatch = filters.teacher === 'all' || workshop.teachers.includes(filters.teacher);
+              const spaceMatch = filters.space === 'all' || workshop.spaces.includes(filters.space);
+              const courseMatch = filters.course === 'all' || !workshop.course || workshop.course === filters.course;
+              return subjectMatch && teacherMatch && spaceMatch && courseMatch;
+            }).map(workshop => {
+                const subject = data.subjects.find(s => s.name === workshop.subject) || {};
+                const spaceNames = workshop.spaces.map(s => s.split(' - ')[1] || s).join(', ');
+                let details = [];
+                if (workshop.subject !== 'General Activity') details.push(workshop.subject);
+                details.push(spaceNames);
+                if (workshop.course) details.push(`<em>${workshop.course}</em>`);
+                
+                const commentIcon = workshop.comments ? `<i class="fas fa-comment comment-icon" data-bs-toggle="popover" data-bs-trigger="hover" title="Comments" data-bs-content="${workshop.comments}"></i>` : '';
+                const teacherBadge = workshop.teachers.length > 0 ? `<br><span class="badge bg-light text-dark mt-1">${workshop.teachers.join(', ')}</span>` : '';
+
+                return `<div class="workshop-cell ${subject.name === 'General Activity' ? 'open-room' : ''}" style="background-color: ${subject.color || '#6c757d'}" data-id="${workshop.id}">
+                          <strong>${workshop.name}</strong>
+                          <br><small>${details.join(' - ')}</small>
+                          ${teacherBadge}
+                          ${commentIcon}
+                        </div>`;
+            }).join('');
+
+            const occupiedSpaces = workshopsInCell.flatMap(w => w.spaces);
+            const freeSpaces = data.spaces.filter(s => !occupiedSpaces.includes(s));
+            const availableContent = freeSpaces.length > 0 
+                ? `<div class="available-space"><i class="fas fa-door-closed me-1"></i> Available: ${freeSpaces.map(s => s.split(' - ')[1] || s).join(', ')}</div>` 
+                : '';
+            
+            tableHtml += `<td><div class="workshops-container">${cellContent}</div>${availableContent}</td>`;
+          });
+          tableHtml += '</tr>';
+        });
+
+        dom.scheduleBody.innerHTML = tableHtml;
+        reinitializePopovers();
+      }
+      
+      function renderHistory() {
+          const accordion = document.getElementById('historyAccordion');
+          if (!accordion) return;
+          if (data.history.length === 0) {
+              accordion.innerHTML = '<p class="text-center text-muted" id="noHistoryMessage">No history recorded yet.</p>';
+              return;
+          }
+          
+          accordion.innerHTML = data.history.map((record, index) => {
+              const workshopsList = record.workshops.map(w => `<li class="list-group-item">${w.name} (${w.subject}) - ${(w.teachers || []).join(', ') || 'N/A'}</li>`).join('');
+              return `<div class="accordion-item">
+                          <h2 class="accordion-header d-flex align-items-center">
+                              <button class="accordion-button collapsed flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-week-${index}">
+                                  ${record.week} (${record.workshops.length} activities)
+                              </button>
+                              <button class="btn btn-sm btn-outline-danger me-2 delete-history-item" data-index="${index}"><i class="fas fa-trash"></i></button>
+                          </h2>
+                          <div id="collapse-week-${index}" class="accordion-collapse collapse" data-bs-parent="#historyAccordion">
+                              <div class="accordion-body"><ul class="list-group">${workshopsList}</ul></div>
+                          </div>
+                      </div>`;
+          }).join('');
+      }
+
+      // ---------- EVENT HANDLERS & LOGIC ----------
+      function createWorkshop() {
+        const workshopData = getWorkshopDataFromModal('New');
+        if (!workshopData) return;
+        const conflictMessage = checkForConflict(workshopData);
+        if (conflictMessage) {
+            showAlert(conflictMessage, 'danger');
+            return;
+        }
+        data.workshops.push(workshopData);
+        saveToStorage();
+        
+        dom.newWorkshopModalEl.addEventListener('hidden.bs.modal', () => {
+            renderAll();
+            showAlert('Activity created successfully.', 'success');
+        }, { once: true });
+
+        bootstrap.Modal.getInstance(dom.newWorkshopModalEl).hide();
+      }
+
+      function saveWorkshopChanges() {
+          const workshopId = parseInt(document.getElementById('editWorkshopId').value);
+          const workshopIndex = data.workshops.findIndex(w => w.id === workshopId);
+          if (workshopIndex === -1) return;
+          
+          const updatedWorkshop = getWorkshopDataFromModal('Edit', workshopId);
+          if (!updatedWorkshop) return;
+          const conflictMessage = checkForConflict(updatedWorkshop);
+          if (conflictMessage) {
+              showAlert(conflictMessage, 'danger');
+              return;
+          }
+          
+          data.workshops[workshopIndex] = updatedWorkshop;
+          saveToStorage();
+          
+          dom.editWorkshopModalEl.addEventListener('hidden.bs.modal', () => {
+              renderAll();
+              showAlert('Activity updated successfully.', 'success');
+          }, { once: true });
+          
+          bootstrap.Modal.getInstance(dom.editWorkshopModalEl).hide();
+      }
+
+      function deleteWorkshop() {
+          const workshopId = parseInt(document.getElementById('editWorkshopId').value);
+          data.workshops = data.workshops.filter(w => w.id !== workshopId);
+          saveToStorage();
+
+          dom.editWorkshopModalEl.addEventListener('hidden.bs.modal', () => {
+              renderAll();
+              showAlert('Activity deleted.', 'info');
+          }, { once: true });
+          
+          bootstrap.Modal.getInstance(dom.editWorkshopModalEl).hide();
+      }
+      
+      // ---------- HELPER FUNCTIONS ----------
+      function updateAllDropdowns() {
+        updateDropdown('filterSubject', data.subjects.map(s => s.name), 'All Subjects');
+        updateDropdown('filterTeacher', data.teachers, 'All Teachers');
+        updateDropdown('filterSpace', data.spaces, 'All Spaces');
+        updateDropdown('filterCourse', data.courses, 'All Courses');
+        
+        const workshopSubjects = data.subjects.filter(s => s.name !== 'General Activity').map(s => s.name);
+        ['new', 'edit'].forEach(type => {
+          updateDropdown(`${type}WorkshopSubject`, workshopSubjects);
+          updateDropdown(`${type}WorkshopTeachers`, data.teachers);
+          updateDropdown(`${type}WorkshopSpaces`, data.spaces);
+          updateDropdown(`${type}WorkshopCourse`, data.courses, 'No Course');
+          updateDropdown(`${type}WorkshopDay`, data.days);
+          updateDropdown(`${type}WorkshopTimeSlot`, data.timeSlots, false, true);
+        });
+      }
+
+      function updateDropdown(selectId, options, defaultOptionText = false, useIndexAsValue = false) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+        let html = '';
+        if (defaultOptionText) {
+          const value = ['No Teacher', 'No Course'].includes(defaultOptionText) ? '' : 'all';
+          html += `<option value="${value}">${defaultOptionText}</option>`;
+        }
+        if (Array.isArray(options)) {
+            html += options.map((option, index) => `<option value="${useIndexAsValue ? index : option}">${option}</option>`).join('');
+        }
+        select.innerHTML = html;
+      }
+      
+      function addEntity(type, inputId) {
+          const input = document.getElementById(inputId);
+          const name = input.value.trim();
+          const collection = data[type + 's'];
+          if (name && !collection.includes(name)) {
+              collection.push(name);
+              input.value = '';
+              saveToStorage();
+              renderAll();
+              showAlert(`${type.charAt(0).toUpperCase() + type.slice(1)} added.`, 'success');
+          } else {
+              showAlert(`Invalid or duplicate ${type} name.`, 'danger');
+          }
+      }
+
+      function deleteEntity(type, name) {
+          data[type + 's'] = data[type + 's'].filter(item => item !== name);
+          data.workshops.forEach(w => {
+              if (w[type + 's']) {
+                  w[type + 's'] = w[type + 's'].filter(item => item !== name);
+              }
+          });
+          saveToStorage();
+          renderAll();
+      }
+      
+      function addSubject() {
+          const nameInput = document.getElementById('newSubjectName');
+          const name = nameInput.value.trim();
+          if (name && !data.subjects.find(s => s.name === name)) {
+              data.subjects.push({ name, color: document.getElementById('newSubjectColor').value });
+              nameInput.value = '';
+              saveToStorage();
+              renderAll();
+              showAlert('Subject added.', 'success');
+          } else {
+              showAlert('Invalid or duplicate subject name.', 'danger');
+          }
+      }
+
+      function deleteSubject(name) {
+          data.subjects = data.subjects.filter(s => s.name !== name);
+          data.workshops.forEach(w => { if (w.subject === name) w.subject = '[Unassigned]'; });
+          saveToStorage();
+          renderAll();
+      }
+      
+      function updateTimeSlot(index, value) {
+        if (value.trim()) {
+            data.timeSlots[index] = value.trim();
+            saveToStorage();
+            renderAll();
+            showAlert('Time slot updated.', 'info');
+        }
+      }
+
+      function deleteTimeSlot(index) {
+          data.timeSlots.splice(index, 1);
+          data.workshops = data.workshops.filter(w => w.timeSlot !== index);
+          data.workshops.forEach(w => { if(w.timeSlot > index) w.timeSlot--; });
+          saveToStorage();
+          renderAll();
+      }
+
+      function clearAllHistory() {
+          data.history = [];
+          saveToStorage();
+          renderHistory();
+          showAlert('All history records have been deleted.', 'info');
+      }
+      
+      function populateEditModal(workshopId) {
+          const workshop = data.workshops.find(w => w.id === parseInt(workshopId));
+          if (!workshop) return;
+          
+          const isOpenRoom = workshop.subject === 'General Activity';
+          document.getElementById('isOpenRoomEdit').checked = isOpenRoom;
+          toggleWorkshopFields('Edit', isOpenRoom);
+          
+          document.getElementById('editWorkshopId').value = workshop.id;
+          document.getElementById('editWorkshopName').value = workshop.name;
+          document.getElementById('editWorkshopSubject').value = workshop.subject;
+          document.getElementById('editWorkshopCourse').value = workshop.course;
+          document.getElementById('editWorkshopDay').value = workshop.day;
+          document.getElementById('editWorkshopTimeSlot').value = workshop.timeSlot;
+          document.getElementById('editWorkshopComments').value = workshop.comments;
+          
+          Array.from(document.getElementById('editWorkshopTeachers').options).forEach(opt => {
+              opt.selected = workshop.teachers.includes(opt.value);
+          });
+          Array.from(document.getElementById('editWorkshopSpaces').options).forEach(opt => {
+              opt.selected = workshop.spaces.includes(opt.value);
+          });
+
+          bootstrap.Modal.getOrCreateInstance(dom.editWorkshopModalEl).show();
+      }
+
+      function getSelectedValues(selectId) {
+          return Array.from(document.getElementById(selectId).selectedOptions).map(opt => opt.value);
+      }
+
+      function getWorkshopDataFromModal(modalType, id = Date.now()) {
+        const type = modalType.toLowerCase();
+        const isOpenRoom = document.getElementById(`isOpenRoom${modalType}`).checked;
+        const baseData = {
+          id,
+          day: document.getElementById(`${type}WorkshopDay`).value,
+          timeSlot: parseInt(document.getElementById(`${type}WorkshopTimeSlot`).value),
+          comments: document.getElementById(`${type}WorkshopComments`).value,
+          teachers: getSelectedValues(`${type}WorkshopTeachers`),
+          spaces: getSelectedValues(`${type}WorkshopSpaces`)
+        };
+        let specificData = {};
+
+        if (isOpenRoom) {
+          specificData = { name: "Open Room", subject: "General Activity", course: "" };
+        } else {
+          specificData = {
+            name: document.getElementById(`${type}WorkshopName`).value,
+            subject: document.getElementById(`${type}WorkshopSubject`).value,
+            course: document.getElementById(`${type}WorkshopCourse`).value
+          };
+        }
+        if (!specificData.name || baseData.spaces.length === 0 || !baseData.day) {
+          showAlert('Name, at least one space, and day are required.', 'warning'); return null;
+        }
+        return { ...baseData, ...specificData };
+      }
+
+      function checkForConflict(workshopToCheck) {
+        for (const w of data.workshops) {
+            if (w.day === workshopToCheck.day && w.timeSlot === workshopToCheck.timeSlot && w.id !== workshopToCheck.id) {
+                const spaceOverlap = workshopToCheck.spaces.some(s => w.spaces.includes(s));
+                if (spaceOverlap) return `Conflict: A selected space is already occupied.`;
+                
+                const teacherOverlap = workshopToCheck.teachers.some(t => t && w.teachers.includes(t));
+                if (teacherOverlap) return `Conflict: A selected teacher is already busy.`;
+            }
+        }
+        return null;
+      }
+
+      function archiveWeek() {
+        if (data.workshops.length === 0) { showAlert('Cannot archive an empty schedule.', 'warning'); return; }
+        const today = new Date();
+        const weekString = `Week of ${new Date(today.setDate(today.getDate() - today.getDay() + 1)).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+        data.history.unshift({ week: weekString, workshops: JSON.parse(JSON.stringify(data.workshops)) });
+        saveToStorage();
+        renderHistory();
+        showAlert(`Schedule for ${weekString} archived.`, 'success');
+      }
+
+      function clearSchedule() {
+        data.workshops = [];
+        saveToStorage();
+        renderScheduleGrid();
+        showAlert('Schedule cleared.', 'info');
+      }
+
+      function clearFilters() {
+        ['Subject', 'Teacher', 'Space', 'Course'].forEach(f => document.getElementById(`filter${f}`).value = 'all');
+        renderScheduleGrid();
+      }
+      
+      function showAlert(message, type) {
+          const toastContainer = document.querySelector('.toast-container');
+          const toastId = 'toast-' + Date.now();
+          const toastHTML = `
+              <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="d-flex">
+                      <div class="toast-body">${message}</div>
+                      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+              </div>`;
+          toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+          const toastEl = document.getElementById(toastId);
+          const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+          toast.show();
+          toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+      }
+
+      function showConfirmation(message, callback) {
+        const modal = bootstrap.Modal.getOrCreateInstance(dom.confirmationModalEl);
+        document.getElementById('confirmationModalBody').textContent = message;
+        const confirmBtn = document.getElementById('confirmActionBtn');
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        newConfirmBtn.addEventListener('click', () => { callback(); modal.hide(); }, { once: true });
+        modal.show();
+      }
+
+      function toggleWorkshopFields(modalType, isOpenRoom) {
+        document.getElementById(`workshopFields${modalType}`).style.display = isOpenRoom ? 'none' : 'block';
+      }
+
+      function reinitializePopovers() {
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            const popover = bootstrap.Popover.getInstance(el);
+            if (popover) popover.dispose();
+            new bootstrap.Popover(el);
+        });
+      }
+      
+      function exportToCSV() {
+        const headers = ["Day", "Time Slot", "Workshop", "Subject", "Teachers", "Spaces", "Course", "Comments"];
+        let csvContent = headers.join(",") + "\r\n";
+        const rows = data.workshops.map(w => {
+            const row = [ w.day, data.timeSlots[w.timeSlot], w.name, w.subject, w.teachers.join('; '), w.spaces.join('; '), w.course, w.comments ];
+            return row.map(field => {
+                const str = String(field || '');
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return `"${str.replace(/"/g, '""')}"`;
+                }
+                return str;
+            }).join(",");
+        });
+        csvContent += rows.join("\r\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "weekly_schedule.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function initTheme() {
+          const darkModeSwitch = document.getElementById('darkModeSwitch');
+          if (localStorage.getItem('theme') === 'dark') {
+              document.body.classList.add('dark-mode');
+              darkModeSwitch.checked = true;
+          }
+          darkModeSwitch.addEventListener('change', () => {
+              document.body.classList.toggle('dark-mode');
+              localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+          });
+      }
+
+      // ---------- GLOBAL EVENT LISTENERS ----------
+      function wireGlobalHandlers() {
+          // --- Main Buttons ---
+          document.getElementById('addTeacherBtn').addEventListener('click', () => addEntity('teacher', 'newTeacher'));
+          document.getElementById('addSpaceBtn').addEventListener('click', () => addEntity('space', 'newSpace'));
+          document.getElementById('addCourseBtn').addEventListener('click', () => addEntity('course', 'newCourse'));
+          document.getElementById('addSubjectBtn').addEventListener('click', addSubject);
+          document.getElementById('addTimeSlotBtn').addEventListener('click', () => {
+              const input = document.getElementById('newTimeSlot');
+              if (input.value.trim()) {
+                  data.timeSlots.push(input.value.trim());
+                  input.value = '';
+                  saveToStorage();
+                  renderAll();
+                  showAlert('Time slot added.', 'success');
+              } else showAlert('Time slot cannot be empty.', 'warning');
+          });
+          
+          ['filterSubject', 'filterTeacher', 'filterSpace', 'filterCourse'].forEach(id => {
+              document.getElementById(id).addEventListener('change', renderScheduleGrid);
+          });
+
+          document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+          document.getElementById('archiveWeekBtn').addEventListener('click', archiveWeek);
+          document.getElementById('clearScheduleBtn').addEventListener('click', () => {
+              if (data.workshops.length > 0) showConfirmation("Clear schedule?", clearSchedule);
+              else showAlert('Schedule is already empty.', 'info');
+          });
+          document.getElementById('exportCsvBtn').addEventListener('click', exportToCSV);
+          document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+              if (data.history.length > 0) showConfirmation("Delete all history records?", clearAllHistory);
+              else showAlert('History is already empty.', 'info');
+          });
+
+          // --- Modal Buttons ---
+          document.getElementById('createWorkshopBtn').addEventListener('click', createWorkshop);
+          document.getElementById('saveWorkshopChangesBtn').addEventListener('click', saveWorkshopChanges);
+          document.getElementById('deleteWorkshopBtn').addEventListener('click', deleteWorkshop);
+
+          // --- Event Delegation for Dynamic Elements ---
+          document.getElementById('configManagementRow').addEventListener('click', (e) => {
+              const btn = e.target.closest('.delete-entity');
+              if (btn) {
+                  const { type, name } = btn.dataset;
+                  showConfirmation(`Delete ${name}? This cannot be undone.`, () => deleteEntity(type, name));
+              }
+          });
+          
+          document.getElementById('subjectManagementRow').addEventListener('click', (e) => {
+              const btn = e.target.closest('.delete-subject');
+              if (btn) {
+                  showConfirmation(`Delete subject ${btn.dataset.name}?`, () => deleteSubject(btn.dataset.name));
+              }
+          });
+
+          document.getElementById('timeSlotList').addEventListener('click', e => {
+              if (e.target.closest('.save-timeslot')) {
+                  const btn = e.target.closest('.save-timeslot');
+                  const input = btn.previousElementSibling;
+                  updateTimeSlot(btn.dataset.index, input.value);
+              }
+              if (e.target.closest('.delete-timeslot')) {
+                  const btn = e.target.closest('.delete-timeslot');
+                  showConfirmation('Delete time slot? All workshops in it will be removed.', () => deleteTimeSlot(btn.dataset.index));
+              }
+          });
+
+          document.getElementById('scheduleBody').addEventListener('click', e => {
+              const cell = e.target.closest('.workshop-cell');
+              if (cell) populateEditModal(cell.dataset.id);
+          });
+          
+          document.getElementById('historyAccordion').addEventListener('click', e => {
+              const btn = e.target.closest('.delete-history-item');
+              if (btn) {
+                  showConfirmation('Delete this history record?', () => {
+                      data.history.splice(parseInt(btn.dataset.index), 1);
+                      saveToStorage();
+                      renderHistory();
+                  });
+              }
+          });
+
+          // --- Toggles ---
+          document.getElementById('isOpenRoomNew').addEventListener('change', (e) => toggleWorkshopFields('New', e.target.checked));
+          document.getElementById('isOpenRoomEdit').addEventListener('change', (e) => toggleWorkshopFields('Edit', e.target.checked));
+      }
+
+      // ---------- INITIALIZATION ----------
+      loadFromStorage();
+      initTheme();
+      renderAll();
+      wireGlobalHandlers();
+    });
+  </script>
+</body>
+</html>
+
